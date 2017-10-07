@@ -18,28 +18,28 @@ dependencies {
 }
 
 task min(type: Jar, dependsOn: classes) {
-    baseName = "iriska-min-" + jar.version
+    baseName = jar.baseName + "-min-" + jar.version
     from sourceSets.main.output
     include '**/si/ijs/maslick/ai/iriska/**/**'
     includeEmptyDirs = false
 }
 
 task minSrc(type: Jar, dependsOn: classes) {
-    baseName = "iriska-min-" + jar.version + "-sources"
+    baseName = jar.baseName + "min-" + jar.version + "-sources"
     from sourceSets.main.allSource
     include '**/si/ijs/maslick/ai/iriska/**/**'
     includeEmptyDirs = false
 }
 
 task all(type: Jar, dependsOn: classes) {
-    baseName = "iriska-all-" + jar.version
+    baseName = jar.baseName + "-all-" + jar.version
     from sourceSets.main.output
     include '**/'
     includeEmptyDirs = false
 }
 
 task allSrc(type: Jar, dependsOn: classes) {
-    baseName = "iriska-all-" + jar.version + "-sources"
+    baseName = jar.baseName + "-all-" + jar.version + "-sources"
     from sourceSets.main.allSource
     include '**/'
 
