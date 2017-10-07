@@ -1,0 +1,51 @@
+apply plugin: 'java'
+
+jar {
+    baseName = 'iriska'
+    version = '0.1'
+}
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile('com.maslick.ai:klassy:0.1.8')
+}
+
+task min(type: Jar, dependsOn: classes) {
+    baseName = "iriska-min-" + jar.version
+    from sourceSets.main.output
+    include '**/si/ijs/maslick/ai/iriska/**/**'
+    includeEmptyDirs = false
+}
+
+task minSrc(type: Jar, dependsOn: classes) {
+    baseName = "iriska-min-" + jar.version + "-sources"
+    from sourceSets.main.allSource
+    include '**/si/ijs/maslick/ai/iriska/**/**'
+    includeEmptyDirs = false
+}
+
+task all(type: Jar, dependsOn: classes) {
+    baseName = "iriska-all-" + jar.version
+    from sourceSets.main.output
+    include '**/'
+    includeEmptyDirs = false
+}
+
+task allSrc(type: Jar, dependsOn: classes) {
+    baseName = "iriska-all-" + jar.version + "-sources"
+    from sourceSets.main.allSource
+    include '**/'
+
+    from sourceSets.test.allSource
+    include '**/'
+    includeEmptyDirs = false
+}
+
+build.finalizedBy(["min", "minSrc", "all", "allSrc"])
