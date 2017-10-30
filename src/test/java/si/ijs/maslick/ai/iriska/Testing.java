@@ -3,11 +3,14 @@ package si.ijs.maslick.ai.iriska;
 import com.maslick.ai.klassy.io.ContextLoader;
 import org.junit.Assert;
 import org.junit.Test;
-import weka.classifiers.trees.RandomTree;
+import weka.classifiers.Classifier;
+import weka.classifiers.Evaluation;
+import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Random;
 
 public class Testing {
 
@@ -77,14 +80,31 @@ public class Testing {
 
     @Test
     public void trainModel() throws Exception {
-        //load data
+        // Load dataset
         BufferedReader br = new BufferedReader(new InputStreamReader(new ContextLoader().getFile("iris-train.arff"), "UTF-8"));
-        Instances data = new Instances(br);
-        data.setClassIndex(4);
+        Instances dataset = new Instances(br);
+        dataset.setClassIndex(4);
 
-        //build model
-        RandomTree model = new RandomTree();
-        model.buildClassifier(data);
-        System.out.println(model);
+        // Split into train and test datasets
+        dataset.randomize(new Random(0));
+        int numberOfInstances = dataset.numInstances();
+        int trainSize = Math.round(numberOfInstances * 80 / 100);
+        int testSize = numberOfInstances - trainSize;
+        Instances trainSet = new Instances(dataset, 0, trainSize);
+        Instances testSet = new Instances(dataset, trainSize, testSize);
+
+        // Build model
+        Classifier model = new RandomForest();
+        model.buildClassifier(trainSet);
+
+        // Evaluate model (percentage split)
+        Evaluation eval = new Evaluation(trainSet);
+        eval.evaluateModel(model, testSet);
+        System.out.println(eval.toSummaryString("\nPercentage split (80%)\n===========================\n", false));
+
+        // Evaluate model (cross validation)
+        eval = new Evaluation(trainSet);
+        eval.crossValidateModel(model, trainSet, 10, new Random(1));
+        System.out.println(eval.toSummaryString("\nCross validation (10 folds)\n===========================\n", false));
     }
 }
