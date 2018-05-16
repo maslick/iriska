@@ -16,7 +16,7 @@ public class Testing {
 
     @Test
     public void testGeneratedModel() {
-        Iris model = new Iris(new ContextLoader());
+        IrisKlassyFire model = new IrisKlassyFire(new ContextLoader());
         Flower flower = Flower.builder()
                 .setSepalLength(5.57091678078844)
                 .setPetalWidth(3.09644861465126)
